@@ -1,0 +1,22 @@
+
+
+
+route:
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: "alert_receiver"
+
+  routes:
+  - receiver: "huge_alert_receiver"
+    matchers:
+    - severity="huge"
+
+receivers:
+- name: "alert_receiver"
+  webhook_configs:
+  - url: "http://127.0.0.1:5001/alert"
+
+- name: "huge_alert_receiver"
+  webhook_configs:
+  - url: "http://127.0.0.1:5001/alert/huge"

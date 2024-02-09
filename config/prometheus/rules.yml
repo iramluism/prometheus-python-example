@@ -1,0 +1,36 @@
+
+
+
+groups:
+- name: "error_5xx"
+  interval: 10s
+  rules:
+  - record: server_error_5xx
+    expr: http_responses_count{status_code=~"5.."}
+
+  - alert: "server_error_5xx_alert"
+    expr: server_error_5xx >= 1
+    for: 15s
+    keep_firing_for: 1m
+    labels:
+      severity: huge
+    annotations:
+      runbook: "check here to trace the error .... "
+      service: "{{$labels.job}}"
+      status_code: "{{$labels.status_code}}"
+      endpoint: "{{$labels.endpoint}}"
+      method: "{{$labels.method}}"
+
+- name: "error_3xx"
+  interval: 1m
+  rules:
+    - record: server_error_3xx
+      expr: http_response_count{status_code=~"3.."}
+
+    - alert: "server_error_3xx"
+      expr: server_error_3xx >= 1
+      for: 5m
+      labels:
+        severity: lower
+      annotations:
+        runbook: "Check the runbool to solve the eror 3xx"
